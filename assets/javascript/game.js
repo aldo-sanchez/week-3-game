@@ -1,43 +1,81 @@
 console.log("test");
 
 //words available for hangman game
-//var wordArray = ["luisana","aldo","melquiades","coffee","black","hole","cellphone","test"];
+// var wordArray = ["luisana","aldo","melquiades","coffee","black","hole","cellphone","test"];
 var wordArray = ["luisana"];
-//selects random word from array, determines length of word, and displays empty slots for selected word
+
+//selects a random word from array, determines length of word, and assigns a selected word to a variable (selectedWord).  
 var randomWord = Math.floor(Math.random()*wordArray.length);
 var wordLength = wordArray[randomWord].length;
+var selectedWord = wordArray[randomWord];
 
-//may not use this stuff
-// var emptyWord = "";
-// for (i = 0; i < lengthWord; i++){
-//   emptyWord = emptyWord + "_ ";
-// };
+// initialize an emptyWord that will be compared to  selectedWord
+var emptyWord = "";
+var oldWord = "";
 
+// gameStatus object will keep track of game and is initialized here.
+var gameStatus = {isPlaying:true, numberWins:0, numberLosses:0, lives:6}
 console.log(wordArray[randomWord]);
 console.log(wordLength);
-// console.log(emptyWord);
 
-
+// we crate two arrays of the same size (length of selectedWord). Each letter of selectedWord will occupy a space in the selectedWordArray.  e.g. selectedWord = test; selectedWordArray = [t,e,s,t];  each space in emptyWordArray is occupied by "_"
 var selectedWordArray = [];
-var emptyWord = [];
+var emptyWordArray = [];
+var wrongLetterArray = [];
+var wrongLetterWord = "";
+
 for (i = 0; i < wordLength; i++){
-  selectedWordArray[i] = wordArray[randomWord].substr(i,1);
-  emptyWord[i] = "_"
+  selectedWordArray[i] = selectedWord.substr(i,1);
+  emptyWordArray[i] = "_";
 };
 console.log(selectedWordArray);
 console.log(emptyWord);
 
-//Compare selected word with user inputs.  If user input = selected word then the input replaces the empty slot in emptyWord.
+
 $(document).ready(function(){
   $(document).keypress(function userGuess(event){
     var userInput = String.fromCharCode(event.keyCode).toLowerCase();
     console.log(userInput);
+    emptyWord = "";
+  
+    //Compare selected word with user inputs.  If user input = selected word then the input replaces the empty slot in emptyWord.
     for (i = 0; i < wordLength; i++){
       if (selectedWordArray[i] == userInput){
-        emptyWord[i] = userInput;
-      };
+        emptyWordArray[i] = userInput;
+      }
+      // else{
+      //   wrongLetterArray[i] = userInput;
+      // }
+      emptyWord = emptyWord + emptyWordArray[i];
+      // wrongLetterWord = wrongLetterArray + wrongLetterArray[i];
     };
-    console.log(emptyWord);
+    console.log(emptyWordArray);
+    console.log(emptyWord);    
+    // console.log(wrongLetterArray);
+    // if (emptyWord == selectedWord) {
+    //   numberWins++;
+    //   alert("you win!");
+    //   console.log(numberWins);
+    // }
+    // else if (lives = 0){
+    //   alert("you lose");
+    // }
+    $(document).keypress(function game(event){
+      if (gameStatus.lives > 0 && emptyWord == selectedWord){
+        alert("you win :)");
+        gameStatus.isPlaying = false;
+        gameStatus.numberWins++;
+        }
+      else if (gameStatus.lives <= 0){
+        alert("you lose :(")
+        gameStatus.isPlaying = false;
+        gameStatus.numberLosses++;
+      };
+    });
+    // console.log(gameStatus.lives);
   });
 });
+
+
+
 
