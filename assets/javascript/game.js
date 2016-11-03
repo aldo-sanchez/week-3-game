@@ -1,8 +1,8 @@
 console.log("test");
 
 //words available for hangman game
-//  var wordArray = ["luisana","aldo","melquiades","coffee","black","hole","cellphone","test"];
-var wordArray = ["luisana"];
+ var wordArray = ["luisana","aldo","melquiades","coffee","black","hole","cellphone","test"];
+// var wordArray = ["luisana"];
 
 //selects a random word from array, determines length of word, and assigns a selected word to a variable (selectedWord).  
 var randomWord = Math.floor(Math.random()*wordArray.length);
@@ -17,7 +17,7 @@ var gameStatus = {isPlaying:false, numberWins:0, numberLosses:0, lives:6}
 console.log(wordArray[randomWord]);
 console.log(wordLength);
 
-// we crate two arrays of the same size (length of selectedWord). Each letter of selectedWord will occupy a space in the selectedWordArray.  e.g. selectedWord = test; selectedWordArray = [t,e,s,t];  each space in emptyWordArray is occupied by "_"
+//create two arrays of the same size (length of selectedWord). Each letter of selectedWord will occupy a space in the selectedWordArray.  e.g. selectedWord = test; selectedWordArray = [t,e,s,t];  each space in emptyWordArray is occupied by "_". e.g. selectedWord = test emptyWordArray = [-,-,-,-]
 var selectedWordArray = [];
 var emptyWordArray = [];
 var wrongLetterArray = [];
@@ -33,13 +33,18 @@ console.log(emptyWord);
 console.log(gameStatus.isPlaying);
 $(document).ready(function () {
     $(document).keypress(function(event){
-        userGuess(event)
+        var eventPress = String.fromCharCode(event.keyCode);
+        if (/[a-zA-Z]/.test(eventPress)){
+            console.log("yes!!!!")
+            userGuess(event)
+        } else{console.log("no....")}
+        
         });
 });
         function userGuess(event) {
+            
             var userInput = String.fromCharCode(event.keyCode).toLowerCase();
             console.log(userInput);
-            wrongLetterWord = emptyWord;
             emptyWord = "";
             var isUserGuessValid = false;
 
