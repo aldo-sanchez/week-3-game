@@ -1,8 +1,8 @@
 console.log("test");
 
 //words available for hangman game
- var wordArray = ["luisana","aldo","melquiades","coffee","black","hole","cellphone","test"];
-//var wordArray = ["luisana"];
+//  var wordArray = ["luisana","aldo","melquiades","coffee","black","hole","cellphone","test"];
+var wordArray = ["luisana"];
 
 //selects a random word from array, determines length of word, and assigns a selected word to a variable (selectedWord).  
 var randomWord = Math.floor(Math.random()*wordArray.length);
@@ -32,18 +32,11 @@ console.log(emptyWord);
 
 console.log(gameStatus.isPlaying);
 $(document).ready(function () {
-
-    if (gameStatus.isPlaying = false) {
-        $(document).keypress(function startGame(event) {
-            userInput = event.keyCode
-            if (userInput = 32) {
-                return gameStatus.isPlaying = true;
-                console.log(gameStatus.isPlaying);
-            }
+    $(document).keypress(function(event){
+        userGuess(event)
         });
-    }
-    else if (gameStatus.isPlaying = true) {
-        $(document).keypress(function userGuess(event) {
+});
+        function userGuess(event) {
             var userInput = String.fromCharCode(event.keyCode).toLowerCase();
             console.log(userInput);
             wrongLetterWord = emptyWord;
@@ -70,7 +63,14 @@ $(document).ready(function () {
             console.log(wrongLetterArray);
             console.log(gameStatus.lives);
 
-            function game() {
+           
+            game(emptyWord);
+        }
+
+  
+  
+
+ function game(word) {
                 if (gameStatus.lives > 0 && emptyWord == selectedWord) {
                     alert("you win :)");
                     gameStatus.isPlaying = false;
@@ -82,15 +82,6 @@ $(document).ready(function () {
                     gameStatus.numberLosses++;
                 };
             };
-            game();
-
-        });
-
-    }
-  
-  
-});
-
 
 
 
