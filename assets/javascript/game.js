@@ -13,7 +13,7 @@ var selectedWord = wordArray[randomWord];
 var emptyWord = "";
 
 // gameStatus object will keep track of game and is initialized here.
-var gameStatus = {isPlaying:false, numberWins:0, numberLosses:0, lives:6}
+var gameStatus = {isStart:true, isPlaying:false, numberWins:0, numberLosses:0, lives:6}
 console.log(wordArray[randomWord]);
 console.log(wordLength);
 
@@ -24,69 +24,106 @@ var wrongLetterArray = [];
 var wrongLetterWord = "";
 
 for (i = 0; i < wordLength; i++){
-  selectedWordArray[i] = selectedWord.substr(i,1);
-  emptyWordArray[i] = "_";
+    selectedWordArray[i] = selectedWord.substr(i,1);
+    emptyWordArray[i] = "_";
+    
 };
 console.log(selectedWordArray);
 console.log(emptyWord);
 
 console.log(gameStatus.isPlaying);
+
+
 $(document).ready(function () {
+    // if (gameStatus.isStart && !gameStatus.isPlaying){
+    if (!gameStatus.isPlaying){
+        $("#testId").html("press space bar to start playing");
+    }
     $(document).keypress(function(event){
+        var eventPress = String.fromCharCode(event.keyCode);
+        if (!gameStatus.isPlaying && / /.test(eventPress)){
+            gameStatus.isPlaying = true;
+            gameStatus.isStart = false;
+            $("#testId").html("we are playing!");
+            $("#lives").html(gameStatus.lives);
+            $("#emptyWord").html(emptyWordArray);
+            gamePlaying();
+        } else if(!gameStatus.isPlaying & !/ /.test(eventPress)){
+            console.log("wrong key... you don't want to play :(")
+        }
+    });     
+});
+
+
+function gamePlaying(){
+    gameStatus.isStart = false;
+    console.log("let's play!")
+        $(document).keypress(function(event){
         var eventPress = String.fromCharCode(event.keyCode);
         if (/[a-zA-Z]/.test(eventPress)){
             console.log("yes!!!!")
             userGuess(event)
         } else{console.log("no....")}
+    });
+
+    };
+
+
+function userGuess(event) {
+    
+    if (gameStatus.lives >0 && emptyWordArray != selectedWord){
         
-        });
-});
-        function userGuess(event) {
-            
-            var userInput = String.fromCharCode(event.keyCode).toLowerCase();
-            console.log(userInput);
-            emptyWord = "";
-            var isUserGuessValid = false;
-
-            //Compare selected word with user inputs.  If user input = selected word then the input replaces the empty slot in emptyWord.
-            for (i = 0; i < wordLength; i++) {
-                if (selectedWordArray[i] == userInput) {
-                    emptyWordArray[i] = userInput;
-                    isUserGuessValid = true;
-                }
-                emptyWord = emptyWord + emptyWordArray[i];
-            };
-
-            //will only enter if it isnot valid and doesnt already exist. 
-            if (!isUserGuessValid && wrongLetterArray.indexOf(userInput) == -1) {
-                gameStatus.lives--;
-                wrongLetterArray.push(userInput);
-                console.log(wrongLetterArray);
+        var userInput = String.fromCharCode(event.keyCode).toLowerCase();
+        console.log(userInput);
+        var emptyWordDisplay = "";
+        emptyWord = "";
+        var isUserGuessValid = false;
+    
+        //Compare selected word with user inputs.  If user input = selected word then the input replaces the empty slot in emptyWord.
+        for (i = 0; i < wordLength; i++) {
+            if (selectedWordArray[i] == userInput) {
+                emptyWordArray[i] = userInput;
+                isUserGuessValid = true;
             }
-
-            console.log(emptyWordArray);
+            emptyWordDisplay = emptyWordDisplay + " " + emptyWordArray[i];
+            emptyWord = emptyWord + emptyWordArray[i];
+            
+        };
+        //will only enter if it isnot valid and doesnt already exist. 
+        if (!isUserGuessValid && wrongLetterArray.indexOf(userInput) == -1) {
+            gameStatus.lives--;
+            wrongLetterArray.push(userInput);
+            wrongLetterWord = wrongLetterWord + " " + userInput;
+            $("#wrongLetterWord").html(wrongLetterWord);
             console.log(wrongLetterArray);
-            console.log(gameStatus.lives);
+            $("#lives").html(gameStatus.lives)
+            
+        } 
 
-           
-            game(emptyWord);
-        }
+        console.log(emptyWordArray);
+        console.log(wrongLetterArray);
+        console.log(gameStatus.lives);
+        console.log(emptyWord);
+        $("#emptyWord").html(emptyWordDisplay);
+        console.log(selectedWord);
+        console.log("still playin");
 
-  
-  
+    } 
+    game(emptyWord);
+}
 
- function game(word) {
-                if (gameStatus.lives > 0 && emptyWord == selectedWord) {
-                    alert("you win :)");
-                    gameStatus.isPlaying = false;
-                    gameStatus.numberWins++;
-                }
-                else if (gameStatus.lives <= 0) {
-                    alert("you lose :(")
-                    gameStatus.isPlaying = false;
-                    gameStatus.numberLosses++;
-                };
-            };
+function game(word) {
+    if (gameStatus.lives > 0 && emptyWord == selectedWord) {
+        console.log("you win :)");
+        gameStatus.isPlaying = false;
+        gameStatus.numberWins++;
+    }
+    else if (gameStatus.lives <= 0) {
+        console.log("you lose :(")
+        gameStatus.isPlaying = false;
+        gameStatus.numberLosses++;
+    };
+};
 
 
 
