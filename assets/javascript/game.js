@@ -13,7 +13,7 @@ var selectedWord = wordArray[randomWord];
 var emptyWord = "";
 
 // gameStatus object will keep track of game and is initialized here.
-var gameStatus = {isStart:true, isPlaying:false, numberWins:0, numberLosses:0, lives:6}
+var gameStatus = {isPlaying:false, numberWins:0, numberLosses:0, lives:6}
 console.log(wordArray[randomWord]);
 console.log(wordLength);
 
@@ -34,16 +34,15 @@ console.log(emptyWord);
 console.log(gameStatus.isPlaying);
 
 
-$(document).ready(function () {
-    // if (gameStatus.isStart && !gameStatus.isPlaying){
+$(document).ready(function() {
     if (!gameStatus.isPlaying){
         $("#testId").html("press space bar to start playing");
     }
+
     $(document).keypress(function(event){
         var eventPress = String.fromCharCode(event.keyCode);
         if (!gameStatus.isPlaying && / /.test(eventPress)){
             gameStatus.isPlaying = true;
-            gameStatus.isStart = false;
             $("#testId").html("we are playing!");
             $("#lives").html(gameStatus.lives);
             $("#emptyWord").html(emptyWordArray);
@@ -56,7 +55,6 @@ $(document).ready(function () {
 
 
 function gamePlaying(){
-    gameStatus.isStart = false;
     console.log("let's play!")
         $(document).keypress(function(event){
         var eventPress = String.fromCharCode(event.keyCode);
@@ -67,6 +65,7 @@ function gamePlaying(){
     });
 
     };
+
 
 
 function userGuess(event) {
