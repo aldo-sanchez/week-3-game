@@ -33,6 +33,7 @@ function initialization(){
         var emptyWord = "";
         var selectedWordArray = [];
         var emptyWordArray = [];
+        var wrongLetterArray = [];
         
         for (i = 0; i < selectedWord.length; i++){
             selectedWordArray[i] = selectedWord.substr(i,1);
@@ -48,7 +49,7 @@ function initialization(){
         $("#emptyWord").html();
         $("#wrongKey").html();
 
-        initialObject = {selectedWord: selectedWord, selectedWordArray: selectedWordArray, emptyWordArray: emptyWordArray};
+        initialObject = {selectedWord: selectedWord, selectedWordArray: selectedWordArray, emptyWordArray: emptyWordArray, wrongLetterArray: wrongLetterArray};
         return initialObject;
     };
 };
@@ -57,149 +58,72 @@ $(document).keypress(function startGameKeyPress(event){
     if (!gameStatus.isPlaying){
         var eventPress = String.fromCharCode(event.keyCode);
         if (/ /.test(eventPress)){
-            gameKeyPress(initialObject.selectedWord, initialObject.selectedWordArray, initialObject.emptyWord, initialObject.emptyWordArray);
-            gameStatus.isPlaying = true;
+            $("testId").html("INNNNNNN");
+            var initialObject = initialization();
+            gameKeyPress(initialObject.selectedWord, initialObject.selectedWordArray, initialObject.emptyWord, initialObject.emptyWordArray, initialObject.wrongLetterArray);
+            
         }else{console.log("wrong key... you don't want to play?")}
     };
 });
 
-function gameKeyPress(selectedWord, selectedWordArray, emptyWord, emptyWordArray){
+function gameKeyPress(selectedWord, selectedWordArray, emptyWord, emptyWordArray, wrongLetterArray){
+    gameStatus.isPlaying = true;
     $(document).keypress(function(event){
         if (gameStatus.isPlaying){
             var eventPress = String.fromCharCode(event.keyCode);
             if (/[a-zA-Z]/.test(eventPress)){
-                gameLogic(event, selectedWord, selectedWordArray, emptyWord, emptyWordArray);
-            }else{console.log("key needs to be a letter from a-z")}
-        }
+                gameLogic(event, selectedWord, selectedWordArray, emptyWord, emptyWordArray, wrongLetterArray);
+            }else{console.log("key needs to be a letter from a-z")};
+        };
     });
 };
 
 
-function gameLogic(event, selectedWord, selectedWordArray, emptyWord, emptyWordArray){    
-    console.log("this is my logic")
-    console.log(selectedWord);
-    console.log(selectedWordArray);
+function gameLogic(event, selectedWord, selectedWordArray, emptyWord, emptyWordArray, wrongLetterArray){    
+    console.log("this is my logic") 
+
+    var userInput = String.fromCharCode(event.keyCode).toLowerCase();
+    
+    var isUserGuessValid = false;
+    emptyWord = "";
+
+    for (i = 0; i < selectedWord.length; i++){
+        if (selectedWordArray[i] == userInput){
+            emptyWordArray[i] = userInput;
+            isUserGuessValid = true;
+        }
+        // emptyWordDisplay = emptyWordDisplay + " " + emptyWordArray[i];
+        emptyWord = emptyWord + emptyWordArray[i];
+    };
+
+    if (!isUserGuessValid && wrongLetterArray.indexOf(userInput) == -1){
+        gameStatus.lives--;
+        wrongLetterArray.push(userInput);
+        wrongLetterWord = wrongLetterWord + " " + userInput;
+        // $("#wrongLetterWord").html(wrongLetterWord);
+        console.log(wrongLetterArray);
+        $("#lives").html(gameStatus.lives)
+    };
     console.log(emptyWordArray);
     console.log(emptyWord);
-}
-var initialObject = initialization();
-console.log(initialObject.selectedWord);
-console.log(initialObject.selectedWordArray);
+    checkGameStatus(emptyWord, selectedWord);    
+};
 
+function checkGameStatus(emptyWord, selectedWord) {
+    if (gameStatus.lives > 0 && emptyWord == selectedWord) {
+        gameStatus.isPlaying = false;
+        gameStatus.numberWins++;
+        $("#wins").html("wins: " + gameStatus.numberWins);
+        initialObject = initialization();
+    }
+    else if (gameStatus.lives <= 0) {
+        gameStatus.isPlaying = false;
+        gameStatus.numberLosses++;
+        $("#losses").html("losses: " + gameStatus.numberLosses);
+    }else{console.log("still playin'")};
+};
 
-// $(document).ready(function() {
-//     startGame();
-//     var initialization = startGame();
-//     console.log(initialization.selectedWord, initialization.wordLength, initialization.selectedWordArray, initialization.emptyWordArray);
-
-//     firstKeyPress(initialization.selectedWord, initialization.wordLength, initialization.emptyWordArray, initialization.selectedWordArray, initialization.emptyWordArray);
-// });
-
-//  function startGame(){
-//     var randomWord = Math.floor(Math.random()*wordArray.length);
-//     // var wordLength = wordArray[randomWord].length;
-//     var selectedWord = wordArray[randomWord];
-
-//         var selectedWordArray = [];
-//         var emptyWordArray = [];
-//         var wrongLetterArray = [];
-//         var emptyWordDisplayArray = [];
-//         var wrongLetterWord = "";
-
-//         for (i = 0; i < wordLength; i++){
-//             selectedWordArray[i] = selectedWord.substr(i,1);
-//             emptyWordArray[i] = "_";
-//             emptyWordDisplayArray[i] = "_"
-//         };
-
-//         $("#testId").html("press space bar to start playing");
-//         $("#lives").html();
-//         $("#emptyWord").html();
-//         $("#wrongKey").html();
-
-//         return {randomWord: randomWord, wordLength: wordLength, selectedWord: selectedWord, selectedWordArray: selectedWordArray, emptyWordArray: emptyWordArray};          
-// };
-    
-// var firstKeyPress = function(selectedWord, wordLength, emptyWordDisplayArray, selectedWordArray, emptyWordArray){
-//     $(document).keypress(function(event){
-//         var eventPress = String.fromCharCode(event.keyCode);
-//         if (!gameStatus.isPlaying && / /.test(eventPress)){
-//             gameStatus.isPlaying = true;
-//             console.log("i am in.")
-    
-//             $("#testId").html(selectedWord);
-//             $("#lives").html(gameStatus.lives);
-//             $("#emptyWord").html(emptyWordDisplayArray);
-
-//             gamePlaying(selectedWord, wordLength, selectedWordArray);
-//         } 
-//         else if(!gameStatus.isPlaying & !/ /.test(eventPress)){
-//             $("#wrongKey").html("wrong key... you don't want to play :(")
-//         }
-//     }); 
-// };
-     
-// function gamePlaying(selectedWord, wordLength, selectedWordArray, emptyWordArray){
-
-//     $(document).keypress(function(event){
-//         var eventPress = String.fromCharCode(event.keyCode);
-//         if (/[a-zA-Z]/.test(eventPress)){
-//             //console.log("yes!!!!")
-//             userGuess(event,selectedWord,wordLength, selectedWordArray)
-//         } 
-//         //else{console.log("no....")};
-//     });
-
-// };
-
-// function userGuess(event, selectedWord, wordLength, selectedWordArray, emptyWordArray) {
-    
-//     if (gameStatus.lives >0 && emptyWord != selectedWord){
-        
-//         var userInput = String.fromCharCode(event.keyCode).toLowerCase();
-//         console.log(userInput);
-//         emptyWordDisplay = "";
-//         var emptyWord = "";
-//         var isUserGuessValid = false;
-    
-//         //Compare selected word with user inputs.  If user input = selected word then the input replaces the empty slot in emptyWord.
-//         for (i = 0; i < wordLength; i++) {
-//             if (selectedWordArray[i] == userInput) {
-//                 emptyWordArray[i] = userInput;
-//                 isUserGuessValid = true;
-//             }
-//             emptyWordDisplay = emptyWordDisplay + " " + emptyWordArray[i];
-//             emptyWord = emptyWord + emptyWordArray[i];
-//         };
-//         //will only enter if it isnot valid and doesnt already exist. 
-//         if (!isUserGuessValid && wrongLetterArray.indexOf(userInput) == -1) {
-//             gameStatus.lives--;
-//             wrongLetterArray.push(userInput);
-//             wrongLetterWord = wrongLetterWord + " " + userInput;
-//             $("#wrongLetterWord").html(wrongLetterWord);
-//             console.log(wrongLetterArray);
-//             $("#lives").html(gameStatus.lives)
-//         } 
-//         //console.log(emptyWordArray);
-//         //console.log(wrongLetterArray);
-//         //console.log(gameStatus.lives);
-//         //console.log(emptyWord);
-//         $("#emptyWord").html(emptyWordDisplay);
-//         //console.log(selectedWord);
-//         console.log("still playin");
-//     };
-//     game(emptyWord, selectedWord);
-// };
-
-// function game(emptyWord, selectedWord) {
-//     if (gameStatus.lives > 0 && emptyWord == selectedWord) {
-//         gameStatus.isPlaying = false;
-//         gameStatus.numberWins++;
-//         $("#wins").html("wins: " + gameStatus.numberWins);
-//     }
-//     else if (gameStatus.lives <= 0) {
-//         gameStatus.isPlaying = false;
-//         gameStatus.numberLosses++;
-//         $("#losses").html("losses: " + gameStatus.numberLosses);
-//     };
-// };
+// if (!gameStatus.isPlaying){
+//     var initialObject = initialization();
+//     console.log("let's start this")
+// }
