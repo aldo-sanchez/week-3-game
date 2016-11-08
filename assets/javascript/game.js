@@ -10,7 +10,7 @@
 // var emptyDisplayWord = "";
 
 // gameStatus object will keep track of game and is initialized here.
-var gameStatus = {isPlaying:false, numberWins:0, numberLosses:0, lives:6}
+var gameStatus = {isPlaying:false, numberWins:0, numberLosses:0, lives:6};
 
 var wordArray = ["luisana","aldo","melquiades","coffee","black","hole","cellphone","test"];
 // console.log(wordArray[randomWord]);
@@ -25,6 +25,10 @@ var wordArray = ["luisana","aldo","melquiades","coffee","black","hole","cellphon
 //     emptyWordDisplayArray[i] = "_ "
     
 // };
+
+$(document).ready(function(){
+    var initialObject = initialization();
+});
 
 function initialization(){
     if (!gameStatus.isPlaying){
@@ -59,10 +63,8 @@ $(document).keypress(function startGameKeyPress(event){
         var eventPress = String.fromCharCode(event.keyCode);
         if (/ /.test(eventPress)){
             $("testId").html("INNNNNNN");
-            var initialObject = initialization();
             gameKeyPress(initialObject.selectedWord, initialObject.selectedWordArray, initialObject.emptyWord, initialObject.emptyWordArray, initialObject.wrongLetterArray);
-            
-        }else{console.log("wrong key... you don't want to play?")}
+        } else{console.log("wrong key... you don't want to play?")}
     };
 });
 
