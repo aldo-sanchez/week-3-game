@@ -10,9 +10,7 @@
 // var emptyDisplayWord = "";
 
 // gameStatus object will keep track of game and is initialized here.
-var gameStatus = {isPlaying:false, numberWins:0, numberLosses:0, lives:6};
 
-var wordArray = ["luisana","aldo","melquiades","coffee","black","hole","cellphone","test"];
 // console.log(wordArray[randomWord]);
 // console.log(wordLength);
 
@@ -25,23 +23,30 @@ var wordArray = ["luisana","aldo","melquiades","coffee","black","hole","cellphon
 //     emptyWordDisplayArray[i] = "_ "
     
 // };
+var gameStatus = { isPlaying: false, selectedWord: "", emptyWord: "", selectedWordArray: [], emptyWordArray: [], wrongLetterArray: [], testValue: 0, numberWins: 0, numberLosses: 0, lives: 0 };
 
-$(document).ready(function(){
-    var initialObject = initialization();
+var wordArray = ["luisana", "aldo", "melquiades", "coffee", "black", "hole", "cellphone", "test"];
+
+$(document).ready(function () {
+    
+    initialization();
+    //var initialObject = initialization();
 });
 
 function initialization(){
     if (!gameStatus.isPlaying){
         var randomWord = Math.floor(Math.random()*wordArray.length);
         var selectedWord = wordArray[randomWord];
-        var emptyWord = "";
-        var selectedWordArray = [];
-        var emptyWordArray = [];
-        var wrongLetterArray = [];
+        gameStatus.selectedWord = wordArray[randomWord];
+        gameStatus.selectedWordArray = [];
+        gameStatus.emptyWordArray = [];
+        gameStatus.emptyWord = "";
+        gameStatus.lives = 6;
+        gameStatus.wrongLetterArray = [];
         
-        for (i = 0; i < selectedWord.length; i++){
-            selectedWordArray[i] = selectedWord.substr(i,1);
-            emptyWordArray[i] = "-";
+        for (i = 0; i < gameStatus.selectedWord.length; i++){
+            gameStatus.selectedWordArray[i] = gameStatus.selectedWord.substr(i,1);
+            gameStatus.emptyWordArray[i] = "-";
         }
 
         console.log(selectedWord);
@@ -52,42 +57,37 @@ function initialization(){
         $("#losses").html("losses: " + gameStatus.numberLosses);
         $("#emptyWord").html();
         $("#wrongKey").html();
-
-        initialObject = {selectedWord: selectedWord, selectedWordArray: selectedWordArray, emptyWordArray: emptyWordArray, wrongLetterArray: wrongLetterArray};
-        return initialObject;
     };
 };
 
-$(document).keypress(function startGameKeyPress(event){
+
+
+$(document).keypress(function startGameKeyPress(event) {
     if (!gameStatus.isPlaying){
         var eventPress = String.fromCharCode(event.keyCode);
         if (/ /.test(eventPress)){
-            $("testId").html("INNNNNNN");
-            gameKeyPress(initialObject.selectedWord, initialObject.selectedWordArray, initialObject.emptyWord, initialObject.emptyWordArray, initialObject.wrongLetterArray);
+            $("#testId").html("INNNNNNN");
+            gameKeyPress();
         } else{console.log("wrong key... you don't want to play?")}
+    } else if (gameStatus.isPlaying) { 
+                var eventPress = String.fromCharCode(event.keyCode);
+                if (/[a-zA-Z]/.test(eventPress)) {
+                    gameLogic(event, gameStatus.selectedWord, gameStatus.selectedWordArray, gameStatus.emptyWord, gameStatus.emptyWordArray, gameStatus.wrongLetterArray);
+                } else { console.log("key needs to be a letter from a-z") };
     };
 });
 
-function gameKeyPress(selectedWord, selectedWordArray, emptyWord, emptyWordArray, wrongLetterArray){
+function gameKeyPress(){
     gameStatus.isPlaying = true;
-    $(document).keypress(function(event){
-        if (gameStatus.isPlaying){
-            var eventPress = String.fromCharCode(event.keyCode);
-            if (/[a-zA-Z]/.test(eventPress)){
-                gameLogic(event, selectedWord, selectedWordArray, emptyWord, emptyWordArray, wrongLetterArray);
-            }else{console.log("key needs to be a letter from a-z")};
-        };
-    });
 };
 
 
 function gameLogic(event, selectedWord, selectedWordArray, emptyWord, emptyWordArray, wrongLetterArray){    
     console.log("this is my logic") 
 
-    var userInput = String.fromCharCode(event.keyCode).toLowerCase();
-    
+    var userInput = String.fromCharCode(event.keyCode).toLowerCase();    
     var isUserGuessValid = false;
-    emptyWord = "";
+   
 
     for (i = 0; i < selectedWord.length; i++){
         if (selectedWordArray[i] == userInput){
@@ -116,16 +116,12 @@ function checkGameStatus(emptyWord, selectedWord) {
         gameStatus.isPlaying = false;
         gameStatus.numberWins++;
         $("#wins").html("wins: " + gameStatus.numberWins);
-        initialObject = initialization();
+        initialization();
     }
     else if (gameStatus.lives <= 0) {
         gameStatus.isPlaying = false;
         gameStatus.numberLosses++;
         $("#losses").html("losses: " + gameStatus.numberLosses);
+        initialization();
     }else{console.log("still playin'")};
 };
-
-// if (!gameStatus.isPlaying){
-//     var initialObject = initialization();
-//     console.log("let's start this")
-// }
