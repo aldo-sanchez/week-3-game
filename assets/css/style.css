@@ -1,0 +1,17 @@
+h1, h2, #instructions{
+  text-align: center;
+}
+
+img {
+  height: 300px;
+  width: 200px;
+}
+
+#hangmanImage{
+  text-align: right;
+}
+
+#instructions{
+  font-size: 25px;
+  color: blue;
+}
